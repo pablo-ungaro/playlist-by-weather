@@ -8,14 +8,17 @@ import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
+import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +41,7 @@ public class SpotifyService {
         final Paging<Track> trackPaging;
         List<String> result = new ArrayList<>();
         try {
+            setCredentialsHeaders();
             final ClientCredentials clientCredentials = clientCredentialsRequest.execute();
             spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
@@ -55,5 +59,14 @@ public class SpotifyService {
             log.error(e.getMessage());
         }
         return result;
+    }
+
+    //This library stop works with no reason, this is a temporary workaround ;(
+    private void setCredentialsHeaders() throws UnsupportedEncodingException {
+        clientCredentialsRequest.getHeaders().clear();
+        String credentials = clientId + ":" + secretId;
+        String encoded = Base64.getEncoder().encodeToString(credentials.getBytes("utf-8"));
+        clientCredentialsRequest.getHeaders().add(new BasicHeader("Content-Type","application/x-www-form-urlencoded"));
+        clientCredentialsRequest.getHeaders().add(new BasicHeader("Authorization",String.format("Basic %s",encoded)));
     }
 }
