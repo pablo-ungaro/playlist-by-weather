@@ -46,6 +46,8 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	compile 'se.michaelthelin.spotify:spotify-web-api-java:2.1.2'
+	compile "io.springfox:springfox-swagger2:2.9.2"
+	compile "io.springfox:springfox-swagger-ui:2.9.2"
 }
 
 dependencyManagement {
