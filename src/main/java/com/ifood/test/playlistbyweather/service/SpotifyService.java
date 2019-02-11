@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -59,6 +58,9 @@ public class SpotifyService {
         } catch (IOException | SpotifyWebApiException e) {
             log.error(e.getMessage());
             throw  new SpotifyIntegrationException(e.getMessage());
+        }catch (Exception ex){
+            log.error(ex.getMessage());
+            throw new SpotifyIntegrationException(ex.getMessage());
         }
         return result;
     }

@@ -30,6 +30,9 @@ public class WeatherService {
         } catch (URISyntaxException e) {
             log.error(e.getMessage());
             throw new OpenWeatherMapsIntegrationException(e.getMessage());
+        }catch (Exception ex){
+            log.error(ex.getMessage());
+            throw new OpenWeatherMapsIntegrationException(ex.getMessage());
         }
 
         log.info(String.format("Temperatura no local pesquisado: %s",weather.getTemperature()));
