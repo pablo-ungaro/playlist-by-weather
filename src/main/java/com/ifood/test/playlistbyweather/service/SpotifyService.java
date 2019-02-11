@@ -1,4 +1,4 @@
-package com.ifood.test.playlistbyweather.services;
+package com.ifood.test.playlistbyweather.service;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;

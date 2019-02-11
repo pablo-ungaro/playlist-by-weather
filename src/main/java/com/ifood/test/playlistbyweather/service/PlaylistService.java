@@ -1,4 +1,4 @@
-package com.ifood.test.playlistbyweather.services;
+package com.ifood.test.playlistbyweather.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

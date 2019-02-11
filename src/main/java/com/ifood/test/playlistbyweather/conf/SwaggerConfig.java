@@ -15,7 +15,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ifood.test.playlistbyweather.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("com.ifood.test.playlistbyweather.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
