@@ -1,5 +1,6 @@
 package com.ifood.test.playlistbyweather.service;
 
+import com.ifood.test.playlistbyweather.exception.SpotifyIntegrationException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -39,7 +40,7 @@ public class SpotifyService {
 
     public List<String> getPlaylist(String genre,Integer max,Integer offset){
         final Paging<Track> trackPaging;
-        List<String> result = new ArrayList<>();
+        List<String> result;
         try {
             setCredentialsHeaders();
             final ClientCredentials clientCredentials = clientCredentialsRequest.execute();
@@ -57,6 +58,7 @@ public class SpotifyService {
             log.info(String.format("Resultado para %s: %d",genre,trackPaging.getTotal()));
         } catch (IOException | SpotifyWebApiException e) {
             log.error(e.getMessage());
+            throw  new SpotifyIntegrationException(e.getMessage());
         }
         return result;
     }

@@ -1,6 +1,7 @@
 package com.ifood.test.playlistbyweather.service;
 
 
+import com.ifood.test.playlistbyweather.exception.OpenWeatherMapsIntegrationException;
 import com.ifood.test.playlistbyweather.model.OpenWeatherMap;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -21,13 +22,14 @@ public class WeatherService {
     private static final Logger log = LoggerFactory.getLogger(WeatherService.class);
 
 
-    public Double getTemperatureFromPlace(String city, Double lat, Double lon){
+    public Double getTemperatureFromPlace(String city, Double lat, Double lon) {
         RestTemplate restTemplate = new RestTemplate();
-        OpenWeatherMap weather= null;
+        OpenWeatherMap weather;
         try {
             weather = restTemplate.getForObject(getURI(city,lat,lon), OpenWeatherMap.class);
         } catch (URISyntaxException e) {
             log.error(e.getMessage());
+            throw new OpenWeatherMapsIntegrationException(e.getMessage());
         }
 
         log.info(String.format("Temperatura no local pesquisado: %s",weather.getTemperature()));
