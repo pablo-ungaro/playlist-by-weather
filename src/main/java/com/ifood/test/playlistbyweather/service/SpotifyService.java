@@ -12,6 +12,7 @@ import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +30,12 @@ public class SpotifyService {
     private String clientId;
     @Value("${api.spotify.secretId}")
     private String secretId;
+    @Value("${api.spotify.expire.token}")
+    private Integer expireToken;
+    @Value("${api.spotify.expire.result}")
+    private Integer expireResult;
+    @Autowired
+    private RedisService redisService;
 
     private static final Logger log = LoggerFactory.getLogger(WeatherService.class);
 
@@ -40,6 +48,8 @@ public class SpotifyService {
     public List<String> getPlaylist(String genre,Integer max,Integer offset){
         final Paging<Track> trackPaging;
         List<String> result;
+        Optional fromCache = redisService.getFromCache(genre);
+        if (fromCache.isPresent()) return (List<String>) fromCache.get();
         try {
             setCredentialsHeaders();
             final ClientCredentials clientCredentials = clientCredentialsRequest.execute();
@@ -53,13 +63,15 @@ public class SpotifyService {
             trackPaging = searchTracksRequest.execute();
             result = Arrays.stream(trackPaging.getItems()).map(Track::getName).collect(Collectors.toList());
 
-
+            redisService.setInCache(genre,result,expireResult);
             log.info(String.format("Resultado para %s: %d",genre,trackPaging.getTotal()));
         } catch (IOException | SpotifyWebApiException e) {
             log.error(e.getMessage());
+            redisService.remove(genre);
             throw  new SpotifyIntegrationException(e.getMessage());
         }catch (Exception ex){
             log.error(ex.getMessage());
+            redisService.remove(genre);
             throw new SpotifyIntegrationException(ex.getMessage());
         }
         return result;

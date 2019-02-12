@@ -15,7 +15,7 @@ public class PlaylistController {
     @Autowired private PlaylistService playlistService;
 
     @GetMapping
-    public List<String> suggest(@RequestParam(required = false) String city,
+    public List<String> suggest(@RequestParam(required = false,defaultValue = "") String city,
                                 @RequestParam(required = false) Double latitude,
                                 @RequestParam(required = false) Double longitude,
                                 @RequestParam(required = false, defaultValue = "50") Integer max,
