@@ -56,7 +56,7 @@ public class SpotifyService {
             spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
             SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks("genre:"+genre)
-                    .market(CountryCode.BR)
+                    //.market(CountryCode.BR)
                     .limit(max)
                     .offset(offset)
                     .build();
